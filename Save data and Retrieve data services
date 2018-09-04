@@ -1,0 +1,40 @@
+import { Injectable } from '@angular/core';
+import { IUser } from '../users/user.model'
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
+import { Router } from '@angular/router';
+import { Globals } from '../globals';
+import { DatePipe } from '@angular/common';
+import { ApiEndPoints } from 'app/api-end-points';
+
+@Injectable()
+export class HomeHealthService {
+    constructor(private http: Http, private router: Router, private globals: Globals, private datePipe: DatePipe,private _apiEndPoints: ApiEndPoints) { }
+
+    saveQuote(body) {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+
+        let url = this._apiEndPoints.filteredEndPoints['getHealthCombiCoveragesandQuote'];
+      
+        return this.http.post(url, 
+            {coverageRequest:body,
+            userName: this.globals.USERDTO.userName
+            }, options).map(response => {
+            return response.json();
+        });
+    }
+    
+    loadPolicy(id, userName) {
+
+        let url =  this._apiEndPoints.filteredEndPoints['loadPolicy'];
+        return this.http.post(url,{
+            policyId:id,
+            userName:userName
+        })
+            .map(response => {
+                return response.json();
+            });
+
+    }
+}
